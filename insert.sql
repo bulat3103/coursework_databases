@@ -15,6 +15,10 @@ $$ DECLARE
                        '"Романов", "Сергеев", "Дмитриев", "Ильин"}';
     sport_spheres text[] := '{"Йога", "Аэробика", "Пилатес", "Стрип-дэнс", "Степпинг", "Гимнастика", "Цигун", "Тай-бо", "Сайклинг", ' ||
                             '"Боди-балет", "Ки-бо", "Тайчи", "Кунг-фу", "Каларипаятту"}';
+    eat_calendar_examples text[] := '{"Кашу с утра", "На обед мясо", "Поделай вечером отжимания", "2 киллометра с утра пробежать", "Сегодня весь день на фруктах", ' ||
+                                    '"Покушай много белка, кашки, чая", "30 раз отжимания, 30 раз приседания, 50 раз наклоны", "Сегодня разгрузочный день"}';
+    messages_examples text[] := '{"Не смогу присутстовать на занятии", "Все в силе?", "Подскажите, какие атрибуты понадобятся для занятий", ' ||
+                                '"Как дела у вас?", "Хумай самая лучшая!", "Можем перенести занятие?"}';
     curr_person text := '';
     coach_sport text := '';
     generate_sex int := 0;
@@ -27,7 +31,10 @@ $$ DECLARE
     cur_count int := 0;
     added_person_id int := 0;
     training_coach_id int := 0;
-    group_persons_id bigint[];
+    coach_ids bigint[];
+    person_in_coach_ids bigint[];
+    chat_ids bigint[];
+    person_in_chat_ids bigint[];
 begin
     for i in 1..3 loop
         insert into role values (DEFAULT, roles[i]);
@@ -87,5 +94,20 @@ begin
                                                  training_coach_id, concat('zoom.us/', substr(md5(random()::text), 0, 5)),
                                                  (select id from groups where name=group_names[i]));
             end loop;
+    end loop;
+    coach_ids := (select person_id from coach);
+    for i in 1..30 loop
+            person_in_coach_ids := (select person_id from group_person where group_id=(select id from groups where coach_id=coach_ids[i]));
+            for j in 1..array_length(person_in_coach_ids, 1) loop
+                insert into eat_calendar values (DEFAULT, eat_calendar_examples[round(random() * 7) + 1], (timestamp '01.12.2022' + random() * (timestamp '01.02.2023' - timestamp '01.12.2022'))::date, coach_ids[i], person_in_coach_ids[j]);
+            end loop;
+    end loop;
+    chat_ids := (select id from group_chat);
+    for i in 1..array_length(chat_ids, 1) loop
+        person_in_chat_ids := (select person_id from list_person where chat_id=chat_ids[i]);
+        for j in 1..array_length(person_in_chat_ids, 1) loop
+            insert into list_message values (DEFAULT, chat_ids[i], person_in_chat_ids[j], messages_examples[round(random() * 5) + 1],
+                                             (timestamp '01.10.2022' + random() * (timestamp '05.12.2022' - timestamp '01.10.2022'))::timestamp);
+        end loop;
     end loop;
 end $$;
