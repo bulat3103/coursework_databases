@@ -1,0 +1,13 @@
+drop table list_message;
+drop table list_person;
+drop table group_chat;
+drop table eat_calendar;
+drop table group_person;
+drop table sport_sphere_coach_price;
+drop table training;
+drop table groups;
+drop table sport_sphere;
+drop table transactions;
+drop table coach;
+drop table person;
+drop table role;

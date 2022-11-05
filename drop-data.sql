@@ -1,0 +1,13 @@
+truncate table list_message restart identity;
+truncate table list_person restart identity cascade ;
+truncate table group_chat restart identity cascade;
+truncate table eat_calendar restart identity;
+truncate table group_person restart identity;
+truncate table sport_sphere_coach_price restart identity;
+truncate table training restart identity;
+truncate table groups restart identity cascade;
+truncate table sport_sphere restart identity cascade;
+truncate table coach restart identity cascade;
+truncate table transactions restart identity;
+truncate table person restart identity cascade;
+truncate table role restart identity cascade;
